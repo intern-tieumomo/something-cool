@@ -2,10 +2,12 @@ var totalOrders = 0;
 var totalSpent = 0;
 var totalShippingSpent = 0;
 var totalItems = 0;
+var maxSpent = [];
 var pulling = true;
 var offset = 0;
 
 function getStatistics() {
+    maxSpent['amount'] = 0;
 	var orders = [];
 	var xhttp = new XMLHttpRequest();
 	xhttp.onreadystatechange = function() {
@@ -15,7 +17,11 @@ function getStatistics() {
 			pulling = orders.length >= 10;
 			orders.forEach(order => {
                 console.log("%c💸 ĐÂY LÀ MỘT ĐƠN HÀNG ", "font-size: 30px; color:blue");
-				let tpa = order["paid_amount"] / 100000;
+                let tpa = order["paid_amount"] / 100000;
+                if (tpa > maxSpent["amount"]) {
+                    maxSpent["amount"] = tpa;
+                    maxSpent["items"] = order["items"];
+                }
 				totalSpent += tpa;
 				let tpsa = order["shipping_fee"] / 100000;
                 totalShippingSpent += tpsa;
@@ -41,7 +47,15 @@ function getStatistics() {
 				console.log("%cTổng đơn hàng đã giao: "+"%c"+moneyFormat(totalOrders), "font-size: 30px;","font-size: 30px; color:red");
                 console.log("%cTổng sản phẩm đã đặt: " + "%c" + moneyFormat(totalItems), "font-size: 30px;","font-size: 30px; color:red");
 				console.log("%cTổng chi tiêu: "+"%c"+moneyFormat(totalSpent)+"đ", "font-size: 30px;","font-size: 30px; color:red");
-				console.log("%cTổng tiền ship: "+"%c"+moneyFormat(totalShippingSpent)+"đ", "font-size: 30px;","font-size: 30px; color:red");
+                console.log("%cTổng tiền ship: "+"%c"+moneyFormat(totalShippingSpent)+"đ", "font-size: 30px;","font-size: 30px; color:red");
+                console.log("------------------------------------------------------------------------------------------------------------");
+                console.log("%cĐơn hàng lớn nhất: "+"%c"+moneyFormat(maxSpent["amount"])+"đ", "font-size: 30px;","font-size: 30px; color:red");
+                console.log("%cĐơn hàng này bao gồm: ","font-size: 30px; color:grey");
+                maxSpent["items"].forEach(item => {
+                    console.log("%c📌 Tên sản phẩm: " + "%c" + item["name"], "font-size: 15px;","font-size: 15px; color:red");
+                    console.log("%c🔢 Số lượng: " + "%c" + item["amount"], "font-size: 15px;","font-size: 15px; color:red");
+                    console.log("%c💲 Giá: " + "%c" + moneyFormat(item["order_price"] / 100000) + "đ và tiền ship!", "font-size: 15px;","font-size: 15px; color:red");
+                });
 			}
 		}
 	};

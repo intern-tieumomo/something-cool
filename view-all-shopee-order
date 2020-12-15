@@ -14,18 +14,22 @@ function getStatistics() {
 			totalOrders += orders.length;
 			pulling = orders.length >= 10;
 			orders.forEach(order => {
+                console.log("%c💸 ĐÂY LÀ MỘT ĐƠN HÀNG ", "font-size: 30px; color:blue");
 				let tpa = order["paid_amount"] / 100000;
 				totalSpent += tpa;
 				let tpsa = order["shipping_fee"] / 100000;
                 totalShippingSpent += tpsa;
                 order["items"].forEach(item => {
                     let tpti = item["amount"];
-                    console.log("Tên sản phẩm: " + item["name"]);
-                    console.log("Số lượng: " + item["amount"]);
-                    console.log("Giá: " + moneyFormat(item["order_price"] / 100000));
-                    console.log("-------------------------------------------------------------");
+                    console.log("%c📌 Tên sản phẩm: " + "%c" + item["name"], "font-size: 15px;","font-size: 15px; color:red");
+                    console.log("%c🔢 Số lượng: " + "%c" + item["amount"], "font-size: 15px;","font-size: 15px; color:red");
+                    console.log("%c💲 Giá: " + "%c" + moneyFormat(item["order_price"] / 100000) + "đ", "font-size: 15px;","font-size: 15px; color:red");
                     totalItems += tpti;
                 });
+                console.log("%c🛵 Tiền ship: " + "%c" + moneyFormat(order["payment_info"]["shipping_fee"] / 100000) + "đ", "font-size: 15px;","font-size: 15x; color:red");
+                console.log("%c💵 Tổng tiền: " + "%c" + moneyFormat(order["payment_info"]["price_before_discount"] / 100000) + "đ", "font-size: 15px;","font-size: 15px; color:red");
+                console.log("%c💸 Tổng tiền cuối cùng phải thanh toán sau khi trừ khuyến mại: " + "%c" + moneyFormat(order["payment_info"]["total_price"] / 100000) + "đ", "font-size: 20px;","font-size: 30px; color:red");
+                console.log("--------------------------------------------");
 			});
 			offset += 10;
 			console.log('Đã lấy được: ' + totalOrders + ' đơn hàng');
